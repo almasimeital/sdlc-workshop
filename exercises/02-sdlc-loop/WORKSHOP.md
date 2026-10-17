@@ -18,7 +18,8 @@ the same app.
 - Git, uv, Claude Code and the GitHub CLI, set up as in [SETUP.md](../../SETUP.md). uv brings
   its own Python, so you don't need to install it.
 - Your own fork of this repo, made during setup with `gh repo fork`, so `/sdlc:pr` can open a
-  real pull request. No GitHub? `/sdlc:pr` writes the PR description to a file, `pr.md`, instead.
+  real pull request. Forked in the browser, without `gh`? `/sdlc:pr` writes `pr.md`: push your
+  branch and paste it into a pull request yourself. No GitHub? `pr.md` is your result.
 
 ## Step 1: Open the app
 
