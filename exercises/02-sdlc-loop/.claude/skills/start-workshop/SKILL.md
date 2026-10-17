@@ -42,9 +42,10 @@ Both must print something, or `/sdlc:build` can't commit. If either is empty, as
 and email they want on their commits, and run `git config --global user.name "…"` and
 `git config --global user.email "…"` only after they answer.
 
-Working locally is the default: no GitHub account is needed, and `/sdlc:pr` writes `pr.md`. Only
-if they already use GitHub, have `gh`, and want a real PR, point them to "Optional: a real
-pull request" in WORKSHOP.md.
+Check where `origin` points: `git remote get-url origin`. If it is `haco29/sdlc-workshop` itself
+and `gh auth status` succeeds, suggest `gh repo fork --remote`, so `/sdlc:pr` can open a real
+pull request in their fork; run it only after they agree. No `gh` or no GitHub: that's fine,
+`/sdlc:pr` writes `pr.md` instead.
 
 ## 3. Python and tests
 

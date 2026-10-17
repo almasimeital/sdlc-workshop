@@ -15,14 +15,14 @@ the same app.
 
 ## You need
 
-- Git, uv and Claude Code, set up as in [SETUP.md](../../SETUP.md). uv brings its own
-  Python, so you don't need to install it.
-- No GitHub account. `/sdlc:pr` writes the PR description to a file instead. If you already use
-  GitHub and want a real pull request, see "Optional: a real pull request" below.
+- Git, uv, Claude Code and the GitHub CLI, set up as in [SETUP.md](../../SETUP.md). uv brings
+  its own Python, so you don't need to install it.
+- Your own fork of this repo, made during setup with `gh repo fork`, so `/sdlc:pr` can open a
+  real pull request. No GitHub? `/sdlc:pr` writes the PR description to a file, `pr.md`, instead.
 
 ## Step 1: Open the app
 
-You cloned this repo during setup. Coming from exercise 1? Quit Claude Code with `/exit`,
+You forked and cloned this repo during setup. Coming from exercise 1? Quit Claude Code with `/exit`,
 then go to this exercise's folder and check the tests:
 
 ```bash
@@ -33,6 +33,9 @@ uv run pytest -q              # green before you change anything
 In a new terminal, go to the `sdlc-workshop` folder first, and use
 `cd exercises/02-sdlc-loop` instead.
 
+Cloned the original instead of forking? Run `gh repo fork --remote` here: it keeps your
+folder and commits and points `origin` at your fork, so `/sdlc:pr` can open a pull request.
+
 Everything from here on runs in `exercises/02-sdlc-loop`, and that's where you start Claude
 Code: the agent's instructions for this app and `/start-workshop` live in this folder, and
 the loop writes its artifacts to `sdlc/<branch>/` here.
@@ -40,23 +43,6 @@ the loop writes its artifacts to `sdlc/<branch>/` here.
 ```bash
 claude
 ```
-
-### Optional: a real pull request
-
-Only if you already use GitHub and have the `gh` CLI. Make your own repository from this
-template instead of the plain clone, so your PR lands in your repo. Quit Claude Code with
-`/exit`, then, from this exercise's folder:
-
-```bash
-cd ../../..
-gh repo create my-sdlc-workshop --template haco29/sdlc-workshop --private --clone
-cd my-sdlc-workshop/exercises/02-sdlc-loop
-claude
-```
-
-The first line leaves the plain clone, so the new one doesn't land inside it. Work in
-`my-sdlc-workshop` from now on. In a plain clone of this repo, `/sdlc:pr` writes `pr.md`
-instead, because you can't push to it.
 
 ## Step 2: Install the SDLC kit (once)
 

@@ -10,8 +10,8 @@ self-contained Python project in its own folder.
 
 ## Before you start
 
-- **Set up first: [SETUP.md](SETUP.md).** Git, uv and Claude Code, on Windows or macOS.
-  uv brings its own Python, and you don't need a GitHub account.
+- **Set up first: [SETUP.md](SETUP.md).** Git, uv, Claude Code and the GitHub CLI, on Windows
+  or macOS. uv brings its own Python. No GitHub account? SETUP.md shows the way without one.
 - **Start Claude Code inside the exercise's folder**, not at the repo root. Exercise 2
   carries its own instructions for the agent. Exercise 1 deliberately has none, and
   neither does the root. For exercise 1, from the `sdlc-workshop` folder:
