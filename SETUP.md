@@ -4,15 +4,18 @@ Please do this before the workshop, at your own desk. It takes about 15 minutes,
 downloading. Hit a problem? Send the error message to the facilitator before the day, not
 during it.
 
-You need three tools:
+You need four tools:
 
 | Tool | Why |
 |---|---|
 | **Git** | Gets the exercises, and records your work as commits. On Windows it also brings Git Bash, which Claude Code uses to run commands. |
 | **uv** | Runs Python for you. It downloads the right Python version itself, so you don't need to install Python. |
 | **Claude Code** | The agent you'll work with. |
+| **GitHub CLI (`gh`)** | Makes your own copy of the exercises on GitHub, a fork, so you can open a real pull request at the end. |
 
-You don't need a GitHub account, an editor or anything else.
+You also need a GitHub account for `gh`. No GitHub account, or GitHub blocked on your network?
+You can still do the whole workshop: see [No GitHub?](#no-github). You don't need an editor
+or anything else.
 
 On a company laptop or network? Read
 [Company laptops and corporate networks](#company-laptops-and-corporate-networks) first.
@@ -73,6 +76,14 @@ and then.
 
 Check it: `claude --version` prints a version number.
 
+**4. GitHub CLI.**
+
+```powershell
+winget install --id GitHub.cli -e
+```
+
+Check it: `gh --version` prints a version number.
+
 ## macOS
 
 Open **Terminal**.
@@ -92,9 +103,18 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-Close Terminal, open it again, and check: `uv --version` and `claude --version`.
+**4. GitHub CLI.**
 
-## Both: tell Git who you are
+```bash
+brew install gh
+```
+
+No Homebrew? Download the installer from [cli.github.com](https://cli.github.com/).
+
+Close Terminal, open it again, and check: `uv --version`, `claude --version` and
+`gh --version`.
+
+## Both: tell Git who you are, and sign in to GitHub
 
 Git won't save a commit until it has a name and an email. Any name and email will do: they
 only label your own commits on your own computer.
@@ -104,15 +124,25 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
+Then sign in to GitHub once. Choose GitHub.com, and log in with your browser:
+
+```bash
+gh auth login
+```
+
 ## Check that everything works
 
 These commands work the same in PowerShell and in Terminal. Run them one at a time.
 
 ```bash
-git clone https://github.com/haco29/sdlc-workshop.git
+gh repo fork haco29/sdlc-workshop --clone
 cd sdlc-workshop/exercises/01-agent-basics
 uv run pytest -q
 ```
+
+The first line makes your own copy of the repo on GitHub and downloads it. Already cloned
+the original? Run `gh repo fork --remote` inside it instead: it keeps your folder and points
+it at your fork.
 
 The first `uv run` downloads Python and the test tools, so give it a minute. It should end
 with **11 passed**. Then get exercise 2 ready too, so nothing big downloads during the
@@ -188,7 +218,7 @@ use them.
 PyPI mirror, with the URL from IT. uv then changes `uv.lock` to point at the mirror. That's
 expected: leave that change out of your commits.
 
-**`git clone` fails: GitHub is blocked.** Ask the facilitator for the two repos as zip
+**`gh repo fork` or `git clone` fails: GitHub is blocked.** Ask the facilitator for the two repos as zip
 files, and unzip them into the same folder. Install the SDLC kit from its folder, as in
 step 2 of [WORKSHOP.md](exercises/02-sdlc-loop/WORKSHOP.md). The Git for Windows download
 comes from GitHub too: if it fails, ask IT to install Git.
@@ -205,9 +235,14 @@ mkdir C:\dev
 cd C:\dev
 ```
 
-## Optional: GitHub
+## No GitHub?
 
-You can do the whole workshop without GitHub: your work stays as commits on your computer,
-and `/sdlc:pr` writes the pull request description to a file. If you already use GitHub and want
-a real pull request at the end, also install the [GitHub CLI](https://cli.github.com/) and
-run `gh auth login`. WORKSHOP.md in exercise 2 shows how.
+You can do the whole workshop without a GitHub account: skip `gh`, and get the exercises with
+a plain clone instead of the fork:
+
+```bash
+git clone https://github.com/haco29/sdlc-workshop.git
+```
+
+Your work stays as commits on your computer, and at the end `/sdlc:pr` writes the pull
+request description to a file, `pr.md`, instead of opening a pull request.
