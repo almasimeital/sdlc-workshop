@@ -13,9 +13,9 @@ You need four tools:
 | **Claude Code** | The agent you'll work with. |
 | **GitHub CLI (`gh`)** | Makes your own copy of the exercises on GitHub, a fork, so you can open a real pull request at the end. |
 
-You also need a GitHub account for `gh`. No GitHub account, or GitHub blocked on your network?
-You can still do the whole workshop: see [No GitHub?](#no-github). You don't need an editor
-or anything else.
+You also need a GitHub account for `gh`. Can't install `gh`, no GitHub account, or GitHub
+blocked on your network? You can still do the whole workshop: see [Without gh](#without-gh).
+You don't need an editor or anything else.
 
 On a company laptop or network? Read
 [Company laptops and corporate networks](#company-laptops-and-corporate-networks) first.
@@ -82,7 +82,16 @@ Check it: `claude --version` prints a version number.
 winget install --id GitHub.cli -e
 ```
 
-Check it: `gh --version` prints a version number.
+No administrator rights, or WinGet blocked? Use the portable version. From
+[github.com/cli/cli/releases/latest](https://github.com/cli/cli/releases/latest), download
+`gh_<version>_windows_amd64.zip` and extract it to `C:\Users\<you>\gh`, with your Windows user
+name. Then put it on your PATH:
+
+```powershell
+[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$HOME\gh\bin", "User")
+```
+
+Close PowerShell and open it again. Check it: `gh --version` prints a version number.
 
 ## macOS
 
@@ -185,10 +194,10 @@ else: the workshop takes you through the rest.
 
 | You see | What to do |
 |---|---|
-| `'git'`, `'uv'` or `'claude'` is not recognized | Close the terminal and open a new one. Still failing? The install directory isn't on your PATH: see [Fix your PATH](https://code.claude.com/docs/en/troubleshoot-install). |
+| `'git'`, `'uv'`, `'claude'` or `'gh'` is not recognized | Close the terminal and open a new one. Still failing? The install directory isn't on your PATH: see [Fix your PATH](https://code.claude.com/docs/en/troubleshoot-install). |
 | `The token '&&' is not a valid statement separator` | You're in an older PowerShell. Run the commands one at a time, as written above. |
 | `python3` opens the Microsoft Store | You don't need it. Use `uv run …` as shown, and uv brings its own Python. |
-| An installer asks for administrator rights you don't have | Claude Code and uv install without admin rights. For Git, use the portable Git from step 1, or ask IT before the workshop. |
+| An installer asks for administrator rights you don't have | Claude Code and uv install without admin rights. For Git and the GitHub CLI, use the portable versions from steps 1 and 4, or ask IT before the workshop. |
 | A download fails or times out, or an error mentions a certificate | You may be behind a company proxy or firewall: see [Company laptops and corporate networks](#company-laptops-and-corporate-networks). |
 | `Please tell me who you are` when committing | Run the two `git config` lines above. |
 
@@ -235,14 +244,25 @@ mkdir C:\dev
 cd C:\dev
 ```
 
-## No GitHub?
+## Without gh
 
-You can do the whole workshop without a GitHub account: skip `gh`, and get the exercises with
-a plain clone instead of the fork:
+**A GitHub account, but no `gh`?** Fork in the browser instead: open
+[github.com/haco29/sdlc-workshop](https://github.com/haco29/sdlc-workshop), click **Fork**, then
+clone your fork:
+
+```bash
+git clone https://github.com/<your-user>/sdlc-workshop.git
+```
+
+At the end, `/sdlc:pr` writes the pull request to a file, `pr.md`. Push your branch with
+`git push -u origin <branch>`, open your fork on github.com, click **Compare & pull request**,
+and paste in `pr.md`. The first push asks you to sign in to GitHub in the browser.
+
+**No GitHub account, or GitHub blocked?** Clone the original:
 
 ```bash
 git clone https://github.com/haco29/sdlc-workshop.git
 ```
 
-Your work stays as commits on your computer, and at the end `/sdlc:pr` writes the pull
-request description to a file, `pr.md`, instead of opening a pull request.
+Your work stays as commits on your computer, and `/sdlc:pr` writes `pr.md`. That file is your
+result: the pull request description, ready to paste into whatever review tool you use.
