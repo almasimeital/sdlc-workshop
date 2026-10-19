@@ -7,7 +7,7 @@ days late the payment is, the late fee, one month of interest, and the total due
 
 ```bash
 uv run python main.py     # statements for the sample accounts
-uv run pytest -q
+uv run python -m pytest -q
 ```
 
 Needs [uv](https://docs.astral.sh/uv/), which brings Python and the test tools on the first run.

@@ -18,12 +18,13 @@ A tiny Streamlit app used to practice the agentic SDLC
 Both must pass before every commit:
 
 ```bash
-uv run pytest -q
-uv run ruff check .
+uv run python -m pytest -q
+uv run python -m ruff check .
 ```
 
 Always go through `uv run`: it uses this folder's environment, on Windows and macOS alike.
-Don't create or activate a virtualenv by hand.
+Don't create or activate a virtualenv by hand. Call tools as `python -m <tool>`, never as
+`uv run pytest`: some company laptops block the tools' own `.exe` files but not Python.
 
 ## SDLC
 

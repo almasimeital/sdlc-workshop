@@ -11,7 +11,7 @@ self-contained Python project in its own folder.
 ## Before you start
 
 - **Set up first: [SETUP.md](SETUP.md).** Git, uv, Claude Code and the GitHub CLI, on Windows
-  or macOS. uv brings its own Python. No GitHub account? SETUP.md shows the way without one.
+  or macOS, plus Python 3.12 on Windows. No GitHub account? SETUP.md shows the way without one.
 - **Start Claude Code inside the exercise's folder**, not at the repo root. Exercise 2
   carries its own instructions for the agent. Exercise 1 deliberately has none, and
   neither does the root. For exercise 1, from the `sdlc-workshop` folder:
@@ -32,8 +32,8 @@ editor, not in Claude Code. Exercise 2 has its own playbook:
 
 ```bash
 cd exercises/<exercise>
-uv run pytest -q
-uv run ruff check .
+uv run python -m pytest -q
+uv run python -m ruff check .
 ```
 
 Dummy data only, in every exercise.

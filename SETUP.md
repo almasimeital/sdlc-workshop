@@ -4,12 +4,13 @@ Please do this before the workshop, at your own desk. It takes about 15 minutes,
 downloading. Hit a problem? Send the error message to the facilitator before the day, not
 during it.
 
-You need four tools:
+You need four tools, and on Windows also Python:
 
 | Tool | Why |
 |---|---|
 | **Git** | Gets the exercises, and records your work as commits. On Windows it also brings Git Bash, which Claude Code uses to run commands. |
-| **uv** | Runs Python for you. It downloads the right Python version itself, so you don't need to install Python. |
+| **uv** | Runs Python for you, and installs the packages each exercise needs. On macOS it downloads Python itself. |
+| **Python 3.12** (Windows only) | A normal Python install. Company laptops often block the Python that uv downloads, but allow this one. |
 | **Claude Code** | The agent you'll work with. |
 | **GitHub CLI (`gh`)** | Makes your own copy of the exercises on GitHub, a fork, so you can open a real pull request at the end. |
 
@@ -59,7 +60,15 @@ winget install --id=astral-sh.uv -e
 
 Check it: `uv --version` prints a version number.
 
-**3. Claude Code.**
+**3. Python.**
+
+```powershell
+winget install Python.Python.3.12 --source winget
+```
+
+Check it: `py -3.12 --version` prints `Python 3.12` and a number.
+
+**4. Claude Code.**
 
 ```powershell
 irm https://claude.ai/install.ps1 | iex
@@ -76,7 +85,7 @@ and then.
 
 Check it: `claude --version` prints a version number.
 
-**4. GitHub CLI.**
+**5. GitHub CLI.**
 
 ```powershell
 winget install --id GitHub.cli -e
@@ -146,7 +155,7 @@ These commands work the same in PowerShell and in Terminal. Run them one at a ti
 ```bash
 gh repo fork haco29/sdlc-workshop --clone
 cd sdlc-workshop/exercises/01-agent-basics
-uv run pytest -q
+uv run python -m pytest -q
 ```
 
 The first line makes your own copy of the repo on GitHub and downloads it. Already cloned
@@ -159,7 +168,7 @@ workshop:
 
 ```bash
 cd ../02-sdlc-loop
-uv run pytest -q
+uv run python -m pytest -q
 ```
 
 It should end with **17 passed**.
@@ -196,10 +205,11 @@ else: the workshop takes you through the rest.
 |---|---|
 | `'git'`, `'uv'`, `'claude'` or `'gh'` is not recognized | Close the terminal and open a new one. Still failing? The install directory isn't on your PATH: see [Fix your PATH](https://code.claude.com/docs/en/troubleshoot-install). |
 | `The token '&&' is not a valid statement separator` | You're in an older PowerShell. Run the commands one at a time, as written above. |
-| `python3` opens the Microsoft Store | You don't need it. Use `uv run …` as shown, and uv brings its own Python. |
-| An installer asks for administrator rights you don't have | Claude Code and uv install without admin rights. For Git and the GitHub CLI, use the portable versions from steps 1 and 4, or ask IT before the workshop. |
+| `python3` opens the Microsoft Store | You don't need that command. Use `uv run …` as shown, and check Python with `py -3.12 --version`. |
+| An installer asks for administrator rights you don't have | Claude Code and uv install without admin rights. For Python, add `--scope user` to the `winget` line. For Git and the GitHub CLI, use the portable versions from steps 1 and 5, or ask IT before the workshop. |
 | A download fails or times out, or an error mentions a certificate | You may be behind a company proxy or firewall: see [Company laptops and corporate networks](#company-laptops-and-corporate-networks). |
 | `Please tell me who you are` when committing | Run the two `git config` lines above. |
+| `uv run` says `Access is denied (os error 5)` | Your laptop blocks the programs uv creates: see "uv says Access is denied" under [Company laptops and corporate networks](#company-laptops-and-corporate-networks). |
 
 ## Company laptops and corporate networks
 
@@ -231,6 +241,27 @@ expected: leave that change out of your commits.
 files, and unzip them into the same folder. Install the SDLC kit from its folder, as in
 step 2 of [WORKSHOP.md](exercises/02-sdlc-loop/WORKSHOP.md). The Git for Windows download
 comes from GitHub too: if it fails, ask IT to install Git.
+
+**uv says `Access is denied (os error 5)`.** Some company laptops block the small programs
+uv creates for each exercise, but still run Python itself. Tell uv to use its Python
+directly. Paste these two lines into PowerShell:
+
+```powershell
+$env:UV_PROJECT_ENVIRONMENT = & (uv python find --system --python-preference only-system 3.12) -c "import sys; print(sys.prefix)"
+setx UV_PROJECT_ENVIRONMENT $env:UV_PROJECT_ENVIRONMENT
+```
+
+It should print `SUCCESS: Specified value was saved.` The first line fixes this PowerShell
+window, the second every window you open from now on. Using the terminal inside VS Code? Close
+VS Code completely and open it again, or paste the two lines into each new terminal.
+
+Then go back to [Check that everything works](#check-that-everything-works) and run the
+checks again, inside the exercise folders. To undo the fix after the workshop, paste this,
+then open a new PowerShell:
+
+```powershell
+[Environment]::SetEnvironmentVariable("UV_PROJECT_ENVIRONMENT", $null, "User")
+```
 
 **Claude Code is already set up by IT**, for example through Amazon Bedrock. Skip the
 Claude Code install and the login. Just check that it answers a prompt, as in

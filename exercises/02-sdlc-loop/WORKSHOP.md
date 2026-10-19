@@ -28,7 +28,7 @@ then go to this exercise's folder and check the tests:
 
 ```bash
 cd ../02-sdlc-loop
-uv run pytest -q              # green before you change anything
+uv run python -m pytest -q              # green before you change anything
 ```
 
 In a new terminal, go to the `sdlc-workshop` folder first, and use
@@ -76,7 +76,7 @@ git checkout -b feat/<short-name>      # e.g. feat/percentages
 ```
 
 To see the app you're changing, open a second terminal, go to this exercise's folder as in
-step 1, and run `uv run streamlit run app.py` (stop it with Ctrl+C).
+step 1, and run `uv run python -m streamlit run app.py` (stop it with Ctrl+C).
 
 Every artifact the loop writes goes to `sdlc/<your-branch>/`, so the branch matters. The
 commands refuse to run on `main`.
