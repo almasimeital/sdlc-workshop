@@ -19,8 +19,8 @@ The commands come from the [agentic-sdlc](https://github.com/haco29/agentic-sdlc
 From this folder, `exercises/02-sdlc-loop`:
 
 ```bash
-uv run pytest -q              # should be green
-uv run streamlit run app.py   # opens the poll in your browser
+uv run python -m pytest -q              # should be green
+uv run python -m streamlit run app.py   # opens the poll in your browser
 ```
 
 Votes are stored in a local `poll.json`. **Reset poll** starts over.
@@ -38,14 +38,14 @@ CLAUDE.md            The conventions the agent follows in this repo.
 ```
 
 **The important idea:** a feature's logic goes in `poll/core.py` as plain functions over
-plain data. That's what makes it testable. Test it with `uv run pytest`, then wire it into
-`app.py`.
+plain data. That's what makes it testable. Test it with `uv run python -m pytest`, then wire
+it into `app.py`.
 
 ## Checks
 
 ```bash
-uv run pytest -q
-uv run ruff check .
+uv run python -m pytest -q
+uv run python -m ruff check .
 ```
 
 ## License

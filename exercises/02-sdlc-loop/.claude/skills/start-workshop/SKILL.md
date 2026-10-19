@@ -51,8 +51,8 @@ pull request in their fork; run it only after they agree. No `gh` or no GitHub: 
 
 ```bash
 uv --version
-uv run pytest -q
-uv run ruff check .
+uv run python -m pytest -q
+uv run python -m ruff check .
 ```
 
 uv brings its own Python and creates the environment in this folder; never create or
@@ -76,7 +76,7 @@ git checkout main && git checkout -b feat/<short-name>
 
 Tell them:
 
-- Run `uv run streamlit run app.py` once, to see the app they're changing.
+- Run `uv run python -m streamlit run app.py` once, to see the app they're changing.
 - Their first command is `/sdlc:spec <the feature in a sentence>`, and it will grill them. The
   questions are the point.
 - The loop and what to watch for at each step are in WORKSHOP.md step 5.

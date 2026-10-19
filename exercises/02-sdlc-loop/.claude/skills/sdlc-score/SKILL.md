@@ -28,7 +28,7 @@ ls -R "sdlc/$BRANCH" 2>/dev/null
 - On `main`: stop and ask them to check out their feature branch. There's nothing to score.
 - Read every file in `sdlc/$BRANCH/`. Note anything missing.
 - Read the code diff: what changed in `poll/core.py`, `app.py` and `tests/`.
-- Run `uv run pytest -q` and `uv run ruff check .` yourself. Never take "it's green" on faith.
+- Run `uv run python -m pytest -q` and `uv run python -m ruff check .` yourself. Never take "it's green" on faith.
 - Look for the PR: `gh pr view --json number,url,isDraft,baseRefName,body 2>/dev/null`,
   else `sdlc/$BRANCH/pr.md`.
 
@@ -80,7 +80,7 @@ From the commit order:
 | 8 | New behavior in `poll/core.py` has tests in `tests/`. |
 | 6 | Tests came first: RED entries in Test evidence before GREEN, or tests in the same commit as the code, never in a later "add tests" commit. |
 | 4 | The spec's edge cases are tested (zero votes, ties, a closed poll, duplicates: whatever the feature implies), not just the happy path. |
-| 2 | `uv run pytest -q` and `uv run ruff check .` pass now. |
+| 2 | `uv run python -m pytest -q` and `uv run python -m ruff check .` pass now. |
 
 ### E. Code placement (10)
 
