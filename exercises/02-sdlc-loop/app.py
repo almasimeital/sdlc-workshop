@@ -66,6 +66,8 @@ if poll is None:
 
 st.subheader(plain(poll["question"]))
 colors = option_colors(poll)
+# One set of numbers for the pie and the list, so they can't disagree.
+poll_results = results(poll)
 
 with st.form("vote"):
     choice = st.radio(
@@ -100,7 +102,7 @@ if total_votes(poll):
     pie_data = pd.DataFrame(
         [
             (result["option"], result["votes"], result["percent"], f"{result['percent']}%")
-            for result in results(poll)
+            for result in poll_results
             if result["votes"]
         ],
         columns=["Option", "Votes", "Percent", "Label"],
@@ -115,7 +117,7 @@ if total_votes(poll):
     labels = pie.mark_text(radius=135).encode(text="Label")
     st.altair_chart(slices + labels)
 
-for result in results(poll):
+for result in poll_results:
     trophy = "🏆 " if result["leader"] else ""
     st.markdown(
         f"{trophy}:{colors[result['option']]}[{plain(result['option'])}]: "
