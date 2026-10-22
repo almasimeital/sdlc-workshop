@@ -104,10 +104,23 @@ def test_half_a_percent_rounds_up():
     assert percents(poll) == [13, 88]
 
 
+def test_an_exact_half_percent_rounds_up_without_float_error():
+    # 29 / 200 * 100 is 14.499999999999998 in floating point, so float rounding gives 14.
+    poll = {**create_poll("Lunch?", ["Pizza", "Sushi"]), "votes": {"Pizza": 29, "Sushi": 171}}
+
+    assert percents(poll) == [15, 86]
+
+
 def test_shares_are_not_forced_to_add_up_to_100():
     poll = {**make_poll(), "votes": {"Pizza": 1, "Sushi": 1, "Salad": 1}}
 
     assert percents(poll) == [33, 33, 33]
+
+
+def test_shares_may_add_up_to_more_than_100():
+    poll = {**make_poll(), "votes": {"Pizza": 1, "Sushi": 1, "Salad": 6}}
+
+    assert percents(poll) == [13, 13, 75]
 
 
 def test_results_with_no_votes_are_all_zero_percent():
