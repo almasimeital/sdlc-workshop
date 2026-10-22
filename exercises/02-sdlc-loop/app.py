@@ -11,6 +11,7 @@ from poll.core import (
     create_poll,
     local_time_label,
     option_colors,
+    results,
     tally,
     total_votes,
     vote,
@@ -67,13 +68,13 @@ with st.form("vote"):
         store.save(vote(poll, choice))
         st.rerun()
 
-results = pd.DataFrame(tally(poll), columns=["Option", "Votes"])
+chart_data = pd.DataFrame(tally(poll), columns=["Option", "Votes"])
 # Pin each option to its color and keep the poll's order; Vega would sort both otherwise.
 color_scale = alt.Scale(
     domain=poll["options"], range=[BAR_COLORS[colors[option]] for option in poll["options"]]
 )
 chart = (
-    alt.Chart(results)
+    alt.Chart(chart_data)
     .mark_bar()
     .encode(
         x=alt.X("Option", sort=poll["options"]),
@@ -83,6 +84,12 @@ chart = (
     )
 )
 st.altair_chart(chart)
+for result in results(poll):
+    trophy = "🏆 " if result["leader"] else ""
+    st.markdown(
+        f"{trophy}:{colors[result['option']]}[{result['option']}]: "
+        f"{result['votes']} votes ({result['percent']}%)"
+    )
 st.caption(f"{total_votes(poll)} votes so far")
 
 if st.button("Reset poll"):

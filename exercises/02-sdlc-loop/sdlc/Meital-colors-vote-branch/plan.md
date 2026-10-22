@@ -104,4 +104,7 @@ Checkpoint after Task 4: both checks green (`uv run python -m pytest -q`,
 - 2026-10-22 11:02 · task 2 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 42 passed, all checks passed
 - 2026-10-22 11:05 · task 3 RED · `uv run python -m pytest tests/test_core.py -q` → 5 failed, 24 passed: the 3 new leader tests plus the 2 whole-dict tests from tasks 1–2 (updated to include `leader`) all raised `KeyError: 'leader'` (expected)
 - 2026-10-22 11:06 · task 3 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 45 passed, all checks passed
+- 2026-10-22 11:07 · task 4 RED · `uv run python -m pytest tests/test_app.py -q -k results_list` → 1 failed: `assert [] == ['🏆 :red[Red]: 2 votes (67%)', ...]`, no result lines on the page (expected)
+- 2026-10-22 11:08 · task 4 first full run · `uv run python -m pytest -q && uv run python -m ruff check .` → 5 failed, 41 passed; ruff F811. The chart's `results` DataFrame in `app.py` shadowed the imported `results()` (`'DataFrame' object is not callable`). Fixed by renaming the DataFrame to `chart_data`
+- 2026-10-22 11:09 · task 4 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 46 passed, all checks passed
 

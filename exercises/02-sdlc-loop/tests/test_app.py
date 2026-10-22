@@ -94,6 +94,22 @@ def test_votes_add_up_on_the_chart_and_the_caption():
     assert "3 votes so far" in app.caption[0].value
 
 
+def test_results_list_shows_shares_and_the_leader():
+    app = run_app()
+    create(app, "Who will win?", ["Red", "Blue", "Green"])
+
+    cast_vote(app, "Red")
+    cast_vote(app, "Red")
+    cast_vote(app, "Blue")
+
+    lines = [text.value for text in app.markdown if "votes (" in text.value]
+    assert lines == [
+        "🏆 :red[Red]: 2 votes (67%)",
+        ":blue[Blue]: 1 votes (33%)",
+        ":green[Green]: 0 votes (0%)",
+    ]
+
+
 def test_each_vote_option_is_labelled_in_its_color():
     app = run_app()
     create(app, "Who will win?", ["Red", "Blue", "Green"])
