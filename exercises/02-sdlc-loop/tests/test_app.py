@@ -184,6 +184,35 @@ def test_a_pie_chart_shows_each_options_share():
     assert dict(zip(table["Option"], table["Label"], strict=True)) == {"Red": "67%", "Blue": "33%"}
 
 
+def test_pie_labels_use_the_same_percentages_as_the_list():
+    # 1 of 8 is 12.5%: the list rounds it up to 13%, so a pie rounding on its own would show 12%.
+    store.save({**create_poll("Lunch?", ["Pizza", "Sushi"]), "votes": {"Pizza": 1, "Sushi": 7}})
+
+    app = run_app()
+
+    chart = pie_chart(app)
+    labels = json.loads(chart.proto.spec)["layer"][1]
+    assert labels["encoding"]["text"]["field"] == "Label"
+    table = convert_arrow_bytes_to_pandas_df(chart.proto.datasets[0].data.data)
+    assert list(table["Label"]) == ["13%", "88%"]
+    assert [line.rsplit("(", 1)[1].rstrip(")") for line in result_lines(app)] == ["13%", "88%"]
+
+
+def test_pie_colors_match_the_bars_when_options_are_not_color_names():
+    app = run_app()
+    create(app, "Lunch?", ["Pizza", "Blue", "Sushi"])
+
+    for option in ["Pizza", "Blue", "Sushi"]:
+        cast_vote(app, option)
+
+    scale = json.loads(pie_chart(app).proto.spec)["layer"][0]["encoding"]["color"]["scale"]
+    assert dict(zip(scale["domain"], scale["range"], strict=True)) == {
+        "Pizza": "#ff4b4b",
+        "Blue": "#1c83e1",
+        "Sushi": "#21c354",
+    }
+
+
 def test_the_page_reads_bar_chart_pie_list_caption():
     app = run_app()
     create(app, "Lunch?", ["Pizza", "Sushi"])
@@ -198,6 +227,15 @@ def test_no_pie_chart_before_the_first_vote():
     create(app, "Lunch?", ["Pizza", "Sushi"])
 
     assert page_outline(app) == ["bar", "line", "line", "caption"]
+    # And nothing stands in for it: no note, info box or warning.
+    other_text = [
+        text.value
+        for text in app.markdown
+        if "votes (" not in text.value and "(UTC+3)" not in text.value
+    ]
+    assert other_text == []
+    assert len(app.info) == 0
+    assert len(app.warning) == 0
 
 
 def test_each_vote_option_is_labelled_in_its_color():

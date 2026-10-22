@@ -158,7 +158,7 @@ browser.
 - [x] /sdlc:spec
 - [x] /sdlc:plan
 - [x] /sdlc:build
-- [ ] /sdlc:test
+- [x] /sdlc:test (12 criteria and 12 decisions mapped by the test-engineer agent; 3 pie gaps closed: labels tied to `results()`, pie colors for non-color names, no placeholder at zero votes. Earlier pass: 6 gaps, closed by tasks 5–8)
 - [ ] /sdlc:review
 - [ ] /sdlc:code-simplify
 
@@ -183,4 +183,8 @@ browser.
 - 2026-10-22 11:28 · task 7 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 52 passed, all checks passed; 104 warnings, all Altair `UserWarning: I don't know how to infer vegalite type from 'empty'`, from the pie being drawn with no data before the first vote. Task 8 removes that case
 - 2026-10-22 11:29 · task 8 RED · `uv run python -m pytest tests/test_app.py -q -k "no_pie_chart"` → 1 failed: outline `['bar', 'arc', 'line', 'line', 'caption']`, an empty pie drawn before any vote (expected)
 - 2026-10-22 11:29 · task 8 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 53 passed, 0 warnings, all checks passed
+- 2026-10-22 11:35 · /sdlc:pr gate G4 · `uv run python -m pytest -q && uv run python -m ruff check .` → 53 passed, all checks passed (gates G5, G6 failed; user chose to fix first)
+- 2026-10-22 11:40 · /sdlc:test gap tests · `uv run python -m pytest tests/test_app.py -q -k "same_percentages or not_color_names or no_pie_chart"` → 4 passed on first run (no bugs: code already correct)
+- 2026-10-22 11:41 · /sdlc:test mutation checks · (a) pie labels from `round(votes / total * 100)` → `test_pie_labels_use_the_same_percentages_as_the_list` failed `['12%', '88%'] == ['13%', '88%']`; (b) `st.markdown("No votes yet")` at zero votes → `test_no_pie_chart_before_the_first_vote` failed `['No votes yet'] == []`; (c) pie colors looked up by option name → `test_pie_colors_match_the_bars_when_options_are_not_color_names` failed while the Red/Blue/Green pie test passed. All restored; `git diff app.py` empty
+- 2026-10-22 11:42 · /sdlc:test GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
 
