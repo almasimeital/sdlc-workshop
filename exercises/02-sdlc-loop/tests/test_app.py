@@ -53,6 +53,10 @@ def bar_colors(app):
     return dict(zip(scale["domain"], scale["range"], strict=True))
 
 
+def result_lines(app):
+    return [text.value for text in app.markdown if "votes (" in text.value]
+
+
 def test_the_current_time_in_utc_plus_3_is_shown():
     app = run_app()
 
@@ -102,11 +106,35 @@ def test_results_list_shows_shares_and_the_leader():
     cast_vote(app, "Red")
     cast_vote(app, "Blue")
 
-    lines = [text.value for text in app.markdown if "votes (" in text.value]
-    assert lines == [
+    assert result_lines(app) == [
         "🏆 :red[Red]: 2 votes (67%)",
         ":blue[Blue]: 1 votes (33%)",
         ":green[Green]: 0 votes (0%)",
+    ]
+
+
+def test_results_list_before_and_after_the_first_vote():
+    app = run_app()
+    create(app, "Lunch?", ["Pizza", "Sushi"])
+
+    assert result_lines(app) == [":blue[Pizza]: 0 votes (0%)", ":red[Sushi]: 0 votes (0%)"]
+
+    cast_vote(app, "Sushi")
+
+    assert result_lines(app) == [":blue[Pizza]: 0 votes (0%)", "🏆 :red[Sushi]: 1 votes (100%)"]
+
+
+def test_every_tied_leader_gets_the_trophy():
+    app = run_app()
+    create(app, "Lunch?", ["Pizza", "Sushi", "Salad"])
+
+    cast_vote(app, "Pizza")
+    cast_vote(app, "Sushi")
+
+    assert result_lines(app) == [
+        "🏆 :blue[Pizza]: 1 votes (50%)",
+        "🏆 :red[Sushi]: 1 votes (50%)",
+        ":green[Salad]: 0 votes (0%)",
     ]
 
 

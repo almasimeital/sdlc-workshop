@@ -176,4 +176,7 @@ browser.
 - 2026-10-22 11:22 · task 5 guards · `uv run python -m pytest tests/test_core.py -q -k "float_error or more_than_100"` → 2 passed on first run (expected: code already correct)
 - 2026-10-22 11:23 · task 5 mutation check · temporarily replaced the integer formula with `int(votes / total * 100 + 0.5)`; `uv run python -m pytest tests/test_core.py -q` → 1 failed, 30 passed: `test_an_exact_half_percent_rounds_up_without_float_error` got `[14, 86]` (only the new test caught it). Integer formula restored; `git diff poll/core.py` empty
 - 2026-10-22 11:24 · task 5 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 48 passed, all checks passed
+- 2026-10-22 11:25 · task 6 guards · `uv run python -m pytest tests/test_app.py -q -k "results_list or tied_leader"` → 3 passed on first run (expected: view already correct)
+- 2026-10-22 11:25 · task 6 mutation check · temporarily colored names with `option.lower()` instead of `colors[option]`; same command → 2 failed, 1 passed: both new tests failed, while the old Red/Blue/Green test still passed (the gap they close). Restored; `git diff app.py` empty
+- 2026-10-22 11:25 · task 6 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 50 passed, all checks passed
 
