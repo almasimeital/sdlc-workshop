@@ -109,7 +109,9 @@ if total_votes(poll):
         theta=alt.Theta("Votes", stack=True),
         color=alt.Color("Option", scale=color_scale, legend=None),
     )
-    slices = pie.mark_arc(outerRadius=110).encode(tooltip=["Option", "Votes", "Percent"])
+    slices = pie.mark_arc(outerRadius=110).encode(
+        tooltip=["Option", "Votes", alt.Tooltip("Label", title="Percent")]
+    )
     labels = pie.mark_text(radius=135).encode(text="Label")
     st.altair_chart(slices + labels)
 

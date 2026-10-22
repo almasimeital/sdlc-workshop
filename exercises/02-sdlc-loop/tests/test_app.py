@@ -175,11 +175,10 @@ def test_a_pie_chart_shows_each_options_share():
     assert [mark_type(slices), mark_type(labels)] == ["arc", "text"]
     scale = slices["encoding"]["color"]["scale"]
     assert dict(zip(scale["domain"], scale["range"], strict=True)) == bar_colors(app)
-    assert [field["field"] for field in slices["encoding"]["tooltip"]] == [
-        "Option",
-        "Votes",
-        "Percent",
-    ]
+    # The percent in the tooltip reads "67%", like the slice label.
+    assert [
+        (field["field"], field.get("title")) for field in slices["encoding"]["tooltip"]
+    ] == [("Option", None), ("Votes", None), ("Label", "Percent")]
     table = convert_arrow_bytes_to_pandas_df(chart.proto.datasets[0].data.data)
     assert dict(zip(table["Option"], table["Label"], strict=True)) == {"Red": "67%", "Blue": "33%"}
 

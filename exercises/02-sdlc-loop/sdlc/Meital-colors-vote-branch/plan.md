@@ -164,6 +164,8 @@ browser.
 
 ## Test evidence
 
+Times marked `~` are estimates. Times without `~` on GREEN and gate lines come from a `date` run right after the command; times on RED and mutation lines before 12:19 were estimated too, within a few minutes.
+
 - 2026-10-22 10:59 · task 1 RED · `uv run python -m pytest tests/test_core.py -q` → collection error: `ImportError: cannot import name 'results' from 'poll.core'` (expected, function doesn't exist)
 - 2026-10-22 11:00 · task 1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 39 passed, all checks passed
 - 2026-10-22 11:01 · task 2 RED · `uv run python -m pytest tests/test_core.py -q` → 1 failed, 25 passed: `test_results_with_no_votes_are_all_zero_percent` raised `ZeroDivisionError` (expected). `test_results_keep_the_creation_order` and `test_results_do_not_change_the_poll` passed on first run, as the plan predicted; kept as guards
@@ -189,8 +191,10 @@ browser.
 - 2026-10-22 11:42 · /sdlc:test GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
 
 - 2026-10-22 11:59 · /sdlc:pr gate G4 · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
-- 2026-10-22 12:18 · review I1 RED · `uv run python -m pytest tests/test_app.py -q -k "markdown_in_option"` → 1 failed: `'Fish_and_chips_?' == 'Fish\_and\_chips\_?'`, question rendered unescaped (expected)
+- 2026-10-22 ~12:19 · review I1 RED · `uv run python -m pytest tests/test_app.py -q -k "markdown_in_option"` → 1 failed: `'Fish_and_chips_?' == 'Fish\_and\_chips\_?'`, question rendered unescaped (expected)
 - 2026-10-22 12:20 · review I1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 56 passed, all checks passed
-- 2026-10-22 12:23 · review S1 guard · `uv run python -m pytest tests/test_app.py -q -k "every_core_color"` → 1 passed on first run (tables are in sync today). Mutation check: added `"pink"` to `COLORS` → 1 failed with `KeyError: 'pink'` from `BAR_COLORS`; restored, `git diff poll/core.py` empty
-- 2026-10-22 12:24 · review S1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
-- 2026-10-22 12:26 · review S2 · added `altair>=5` to `pyproject.toml`; `uv lock` → resolved 53 packages, only the direct-dependency entry added (pinned altair 6.2.2 / 6.3.0 unchanged); `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 ~12:21 · review S1 guard · `uv run python -m pytest tests/test_app.py -q -k "every_core_color"` → 1 passed on first run (tables are in sync today). Mutation check: added `"pink"` to `COLORS` → 1 failed with `KeyError: 'pink'` from `BAR_COLORS`; restored, `git diff poll/core.py` empty
+- 2026-10-22 ~12:21 · review S1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 ~12:22 · review S2 · added `altair>=5` to `pyproject.toml`; `uv lock` → resolved 53 packages, only the direct-dependency entry added (pinned altair 6.2.2 / 6.3.0 unchanged); `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 ~12:22 · review N1 RED · `uv run python -m pytest tests/test_app.py -q -k "pie_chart_shows"` → 1 failed: tooltip `('Percent', None) != ('Label', 'Percent')` (expected)
+- 2026-10-22 12:22 · review N1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
