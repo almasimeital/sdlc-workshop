@@ -193,3 +193,4 @@ browser.
 - 2026-10-22 12:20 · review I1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 56 passed, all checks passed
 - 2026-10-22 12:23 · review S1 guard · `uv run python -m pytest tests/test_app.py -q -k "every_core_color"` → 1 passed on first run (tables are in sync today). Mutation check: added `"pink"` to `COLORS` → 1 failed with `KeyError: 'pink'` from `BAR_COLORS`; restored, `git diff poll/core.py` empty
 - 2026-10-22 12:24 · review S1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 12:26 · review S2 · added `altair>=5` to `pyproject.toml`; `uv lock` → resolved 53 packages, only the direct-dependency entry added (pinned altair 6.2.2 / 6.3.0 unchanged); `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
