@@ -199,3 +199,4 @@ Times marked `~` are estimates. Times without `~` on GREEN and gate lines come f
 - 2026-10-22 ~12:22 · review N1 RED · `uv run python -m pytest tests/test_app.py -q -k "pie_chart_shows"` → 1 failed: tooltip `('Percent', None) != ('Label', 'Percent')` (expected)
 - 2026-10-22 12:22 · review N1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
 - 2026-10-22 12:24 · /sdlc:code-simplify · started green (57 passed); after each of 2 simplifications (S4 `poll_results` computed once, S5 pie rows built as named dicts) `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed; no test edited
+- 2026-10-22 12:25 · /sdlc:pr gate G4 (follow-up PR, #1 already merged at 9e71998) · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed; all gates G1–G6 pass
