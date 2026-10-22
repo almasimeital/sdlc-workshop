@@ -159,7 +159,7 @@ browser.
 - [x] /sdlc:plan
 - [x] /sdlc:build
 - [x] /sdlc:test (12 criteria and 12 decisions mapped by the test-engineer agent; 3 pie gaps closed: labels tied to `results()`, pie colors for non-color names, no placeholder at zero votes. Earlier pass: 6 gaps, closed by tasks 5–8)
-- [ ] /sdlc:review
+- [x] /sdlc:review (10 findings: 4 fixed (I1, S1, S2, N1), 4 won't fix (S3, S6, N2, N3), 2 deferred to /sdlc:code-simplify (S4, S5))
 - [ ] /sdlc:code-simplify
 
 ## Test evidence
