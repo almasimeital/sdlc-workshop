@@ -100,4 +100,6 @@ Checkpoint after Task 4: both checks green (`uv run python -m pytest -q`,
 
 - 2026-10-22 10:59 · task 1 RED · `uv run python -m pytest tests/test_core.py -q` → collection error: `ImportError: cannot import name 'results' from 'poll.core'` (expected, function doesn't exist)
 - 2026-10-22 11:00 · task 1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 39 passed, all checks passed
+- 2026-10-22 11:01 · task 2 RED · `uv run python -m pytest tests/test_core.py -q` → 1 failed, 25 passed: `test_results_with_no_votes_are_all_zero_percent` raised `ZeroDivisionError` (expected). `test_results_keep_the_creation_order` and `test_results_do_not_change_the_poll` passed on first run, as the plan predicted; kept as guards
+- 2026-10-22 11:02 · task 2 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 42 passed, all checks passed
 

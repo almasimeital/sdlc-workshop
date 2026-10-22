@@ -57,11 +57,16 @@ class Result(TypedDict):
 def results(poll: Poll) -> list[Result]:
     """Each option's votes and whole-number share of the total, in creation order.
 
-    Shares round half up (12.5% is 13%) and aren't adjusted to add up to 100%.
+    Shares round half up (12.5% is 13%) and aren't adjusted to add up to 100%. With no
+    votes yet, every share is 0%.
     """
     total = total_votes(poll)
     return [
-        {"option": option, "votes": votes, "percent": (votes * 200 + total) // (2 * total)}
+        {
+            "option": option,
+            "votes": votes,
+            "percent": (votes * 200 + total) // (2 * total) if total else 0,
+        }
         for option, votes in tally(poll)
     ]
 
