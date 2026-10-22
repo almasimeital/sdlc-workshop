@@ -1,5 +1,6 @@
 """Streamlit view. Keep it thin: load state, call poll.core, render."""
 
+import re
 from datetime import datetime, timezone
 
 import altair as alt
@@ -27,6 +28,12 @@ BAR_COLORS = {
     "yellow": "#faca2b",
     "gray": "#808495",
 }
+
+
+def plain(text: str) -> str:
+    """Escape Markdown, so a question or option like `a]b` or `![x](url)` shows as typed."""
+    return re.sub(r"([\\`*_\[\]()!$#<>~|])", r"\\\1", text)
+
 
 st.set_page_config(page_title="Live Poll", page_icon="🗳️")
 st.title("🗳️ Live Poll")
@@ -57,12 +64,14 @@ if poll is None:
             st.rerun()
     st.stop()
 
-st.subheader(poll["question"])
+st.subheader(plain(poll["question"]))
 colors = option_colors(poll)
 
 with st.form("vote"):
     choice = st.radio(
-        "Your vote", poll["options"], format_func=lambda option: f":{colors[option]}[{option}]"
+        "Your vote",
+        poll["options"],
+        format_func=lambda option: f":{colors[option]}[{plain(option)}]",
     )
     if st.form_submit_button("Vote"):
         store.save(vote(poll, choice))
@@ -107,7 +116,7 @@ if total_votes(poll):
 for result in results(poll):
     trophy = "🏆 " if result["leader"] else ""
     st.markdown(
-        f"{trophy}:{colors[result['option']]}[{result['option']}]: "
+        f"{trophy}:{colors[result['option']]}[{plain(result['option'])}]: "
         f"{result['votes']} votes ({result['percent']}%)"
     )
 st.caption(f"{total_votes(poll)} votes so far")

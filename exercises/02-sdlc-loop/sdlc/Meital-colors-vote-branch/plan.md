@@ -189,3 +189,5 @@ browser.
 - 2026-10-22 11:42 · /sdlc:test GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
 
 - 2026-10-22 11:59 · /sdlc:pr gate G4 · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
+- 2026-10-22 12:18 · review I1 RED · `uv run python -m pytest tests/test_app.py -q -k "markdown_in_option"` → 1 failed: `'Fish_and_chips_?' == 'Fish\_and\_chips\_?'`, question rendered unescaped (expected)
+- 2026-10-22 12:20 · review I1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 56 passed, all checks passed

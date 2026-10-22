@@ -238,6 +238,22 @@ def test_no_pie_chart_before_the_first_vote():
     assert len(app.warning) == 0
 
 
+def test_markdown_in_option_names_and_the_question_shows_as_plain_text():
+    app = run_app()
+    create(app, "Fish_and_chips_?", ["a]b", "*nix", "![x](http://example.invalid/p.png)"])
+
+    assert app.subheader[0].value == "Fish\\_and\\_chips\\_?"
+    assert app.radio[0].options == [
+        ":blue[a\\]b]",
+        ":red[\\*nix]",
+        ":green[\\!\\[x\\]\\(http://example.invalid/p.png\\)]",
+    ]
+
+    cast_vote(app, "a]b")
+
+    assert result_lines(app)[0] == "🏆 :blue[a\\]b]: 1 votes (100%)"
+
+
 def test_each_vote_option_is_labelled_in_its_color():
     app = run_app()
     create(app, "Who will win?", ["Red", "Blue", "Green"])
