@@ -193,6 +193,13 @@ def test_the_page_reads_bar_chart_pie_list_caption():
     assert page_outline(app) == ["bar", "arc", "line", "line", "caption"]
 
 
+def test_no_pie_chart_before_the_first_vote():
+    app = run_app()
+    create(app, "Lunch?", ["Pizza", "Sushi"])
+
+    assert page_outline(app) == ["bar", "line", "line", "caption"]
+
+
 def test_each_vote_option_is_labelled_in_its_color():
     app = run_app()
     create(app, "Who will win?", ["Red", "Blue", "Green"])

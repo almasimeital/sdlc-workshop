@@ -181,4 +181,6 @@ browser.
 - 2026-10-22 11:25 · task 6 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 50 passed, all checks passed
 - 2026-10-22 11:26 · task 7 RED · `uv run python -m pytest tests/test_app.py -q -k "pie_chart_shows or bar_chart_pie"` → 2 failed: `IndexError` (no second chart) and outline `['bar', 'line', 'line', 'caption']` instead of `['bar', 'arc', 'line', 'line', 'caption']` (expected)
 - 2026-10-22 11:28 · task 7 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 52 passed, all checks passed; 104 warnings, all Altair `UserWarning: I don't know how to infer vegalite type from 'empty'`, from the pie being drawn with no data before the first vote. Task 8 removes that case
+- 2026-10-22 11:29 · task 8 RED · `uv run python -m pytest tests/test_app.py -q -k "no_pie_chart"` → 1 failed: outline `['bar', 'arc', 'line', 'line', 'caption']`, an empty pie drawn before any vote (expected)
+- 2026-10-22 11:29 · task 8 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 53 passed, 0 warnings, all checks passed
 
