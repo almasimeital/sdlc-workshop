@@ -9,7 +9,7 @@ from streamlit.dataframe_util import convert_arrow_bytes_to_pandas_df
 from streamlit.testing.v1 import AppTest
 
 from poll import store
-from poll.core import create_poll
+from poll.core import COLORS, create_poll
 
 APP = str(Path(__file__).resolve().parent.parent / "app.py")
 
@@ -275,6 +275,16 @@ def test_labels_and_bars_agree_when_options_are_not_color_names():
 
     assert app.radio[0].options == [":red[Pizza]", ":blue[Blue]", ":green[Sushi]"]
     assert bar_colors(app) == {"Pizza": "#ff4b4b", "Blue": "#1c83e1", "Sushi": "#21c354"}
+
+
+def test_every_core_color_has_a_bar_color():
+    # BAR_COLORS in app.py is kept by hand; a color added to poll.core.COLORS without a
+    # shade there would crash the page.
+    app = run_app()
+    create(app, "Which?", COLORS)
+
+    assert not app.exception
+    assert list(bar_colors(app)) == COLORS
 
 
 def test_a_poll_with_more_options_than_colors_still_shows():
