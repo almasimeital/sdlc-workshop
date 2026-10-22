@@ -6,7 +6,10 @@ function takes a poll and returns a value or a new poll.
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 from typing import TypedDict
+
+UTC_PLUS_3 = timezone(timedelta(hours=3))
 
 
 class Poll(TypedDict):
@@ -43,3 +46,38 @@ def tally(poll: Poll) -> list[tuple[str, int]]:
 
 def total_votes(poll: Poll) -> int:
     return sum(poll["votes"].values())
+
+
+COLORS = ["blue", "red", "green", "orange", "violet", "yellow", "gray"]
+COLOR_SPELLINGS = {"purple": "violet", "grey": "gray"}
+
+
+def _named_color(option: str) -> str | None:
+    name = option.strip().lower()
+    name = COLOR_SPELLINGS.get(name, name)
+    return name if name in COLORS else None
+
+
+def option_colors(poll: Poll) -> dict[str, str]:
+    """A color name per option.
+
+    An option named after a color gets that color, once. The others take the colors
+    left free, in creation order, and start over from the first color when they run out.
+    """
+    colors: dict[str, str] = {}
+    for option in poll["options"]:
+        named = _named_color(option)
+        if named and named not in colors.values():
+            colors[option] = named
+
+    free = [color for color in COLORS if color not in colors.values()] or COLORS
+    others = [option for option in poll["options"] if option not in colors]
+    for i, option in enumerate(others):
+        colors[option] = free[i % len(free)]
+
+    return {option: colors[option] for option in poll["options"]}
+
+
+def local_time_label(now: datetime) -> str:
+    """`now` as a date and time in UTC+3, like "22 Oct 2026, 10:05:09 (UTC+3)"."""
+    return f"{now.astimezone(UTC_PLUS_3):%d %b %Y, %H:%M:%S} (UTC+3)"
