@@ -159,10 +159,12 @@ browser.
 - [x] /sdlc:plan
 - [x] /sdlc:build
 - [x] /sdlc:test (12 criteria and 12 decisions mapped by the test-engineer agent; 3 pie gaps closed: labels tied to `results()`, pie colors for non-color names, no placeholder at zero votes. Earlier pass: 6 gaps, closed by tasks 5–8)
-- [ ] /sdlc:review
-- [ ] /sdlc:code-simplify
+- [x] /sdlc:review (10 findings: 6 fixed (I1, S1, S2, N1; S4, S5 in /sdlc:code-simplify), 4 won't fix (S3, S6, N2, N3))
+- [x] /sdlc:code-simplify (2 simplifications in `app.py`: results computed once, pie rows as named dicts; no test changed)
 
 ## Test evidence
+
+Times marked `~` are estimates. Times without `~` on GREEN and gate lines come from a `date` run right after the command; times on RED and mutation lines before 12:19 were estimated too, within a few minutes.
 
 - 2026-10-22 10:59 · task 1 RED · `uv run python -m pytest tests/test_core.py -q` → collection error: `ImportError: cannot import name 'results' from 'poll.core'` (expected, function doesn't exist)
 - 2026-10-22 11:00 · task 1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 39 passed, all checks passed
@@ -189,3 +191,12 @@ browser.
 - 2026-10-22 11:42 · /sdlc:test GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
 
 - 2026-10-22 11:59 · /sdlc:pr gate G4 · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
+- 2026-10-22 ~12:19 · review I1 RED · `uv run python -m pytest tests/test_app.py -q -k "markdown_in_option"` → 1 failed: `'Fish_and_chips_?' == 'Fish\_and\_chips\_?'`, question rendered unescaped (expected)
+- 2026-10-22 12:20 · review I1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 56 passed, all checks passed
+- 2026-10-22 ~12:21 · review S1 guard · `uv run python -m pytest tests/test_app.py -q -k "every_core_color"` → 1 passed on first run (tables are in sync today). Mutation check: added `"pink"` to `COLORS` → 1 failed with `KeyError: 'pink'` from `BAR_COLORS`; restored, `git diff poll/core.py` empty
+- 2026-10-22 ~12:21 · review S1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 ~12:22 · review S2 · added `altair>=5` to `pyproject.toml`; `uv lock` → resolved 53 packages, only the direct-dependency entry added (pinned altair 6.2.2 / 6.3.0 unchanged); `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 ~12:22 · review N1 RED · `uv run python -m pytest tests/test_app.py -q -k "pie_chart_shows"` → 1 failed: tooltip `('Percent', None) != ('Label', 'Percent')` (expected)
+- 2026-10-22 12:22 · review N1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 12:24 · /sdlc:code-simplify · started green (57 passed); after each of 2 simplifications (S4 `poll_results` computed once, S5 pie rows built as named dicts) `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed; no test edited
+- 2026-10-22 12:25 · /sdlc:pr gate G4 (follow-up PR, #1 already merged at 9e71998) · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed; all gates G1–G6 pass

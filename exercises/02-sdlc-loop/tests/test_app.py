@@ -9,7 +9,7 @@ from streamlit.dataframe_util import convert_arrow_bytes_to_pandas_df
 from streamlit.testing.v1 import AppTest
 
 from poll import store
-from poll.core import create_poll
+from poll.core import COLORS, create_poll
 
 APP = str(Path(__file__).resolve().parent.parent / "app.py")
 
@@ -175,11 +175,10 @@ def test_a_pie_chart_shows_each_options_share():
     assert [mark_type(slices), mark_type(labels)] == ["arc", "text"]
     scale = slices["encoding"]["color"]["scale"]
     assert dict(zip(scale["domain"], scale["range"], strict=True)) == bar_colors(app)
-    assert [field["field"] for field in slices["encoding"]["tooltip"]] == [
-        "Option",
-        "Votes",
-        "Percent",
-    ]
+    # The percent in the tooltip reads "67%", like the slice label.
+    assert [
+        (field["field"], field.get("title")) for field in slices["encoding"]["tooltip"]
+    ] == [("Option", None), ("Votes", None), ("Label", "Percent")]
     table = convert_arrow_bytes_to_pandas_df(chart.proto.datasets[0].data.data)
     assert dict(zip(table["Option"], table["Label"], strict=True)) == {"Red": "67%", "Blue": "33%"}
 
@@ -238,6 +237,22 @@ def test_no_pie_chart_before_the_first_vote():
     assert len(app.warning) == 0
 
 
+def test_markdown_in_option_names_and_the_question_shows_as_plain_text():
+    app = run_app()
+    create(app, "Fish_and_chips_?", ["a]b", "*nix", "![x](http://example.invalid/p.png)"])
+
+    assert app.subheader[0].value == "Fish\\_and\\_chips\\_?"
+    assert app.radio[0].options == [
+        ":blue[a\\]b]",
+        ":red[\\*nix]",
+        ":green[\\!\\[x\\]\\(http://example.invalid/p.png\\)]",
+    ]
+
+    cast_vote(app, "a]b")
+
+    assert result_lines(app)[0] == "🏆 :blue[a\\]b]: 1 votes (100%)"
+
+
 def test_each_vote_option_is_labelled_in_its_color():
     app = run_app()
     create(app, "Who will win?", ["Red", "Blue", "Green"])
@@ -259,6 +274,16 @@ def test_labels_and_bars_agree_when_options_are_not_color_names():
 
     assert app.radio[0].options == [":red[Pizza]", ":blue[Blue]", ":green[Sushi]"]
     assert bar_colors(app) == {"Pizza": "#ff4b4b", "Blue": "#1c83e1", "Sushi": "#21c354"}
+
+
+def test_every_core_color_has_a_bar_color():
+    # BAR_COLORS in app.py is kept by hand; a color added to poll.core.COLORS without a
+    # shade there would crash the page.
+    app = run_app()
+    create(app, "Which?", COLORS)
+
+    assert not app.exception
+    assert list(bar_colors(app)) == COLORS
 
 
 def test_a_poll_with_more_options_than_colors_still_shows():

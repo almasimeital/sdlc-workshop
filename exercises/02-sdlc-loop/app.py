@@ -1,5 +1,6 @@
 """Streamlit view. Keep it thin: load state, call poll.core, render."""
 
+import re
 from datetime import datetime, timezone
 
 import altair as alt
@@ -27,6 +28,12 @@ BAR_COLORS = {
     "yellow": "#faca2b",
     "gray": "#808495",
 }
+
+
+def plain(text: str) -> str:
+    """Escape Markdown, so a question or option like `a]b` or `![x](url)` shows as typed."""
+    return re.sub(r"([\\`*_\[\]()!$#<>~|])", r"\\\1", text)
+
 
 st.set_page_config(page_title="Live Poll", page_icon="🗳️")
 st.title("🗳️ Live Poll")
@@ -57,12 +64,16 @@ if poll is None:
             st.rerun()
     st.stop()
 
-st.subheader(poll["question"])
+st.subheader(plain(poll["question"]))
 colors = option_colors(poll)
+# One set of numbers for the pie and the list, so they can't disagree.
+poll_results = results(poll)
 
 with st.form("vote"):
     choice = st.radio(
-        "Your vote", poll["options"], format_func=lambda option: f":{colors[option]}[{option}]"
+        "Your vote",
+        poll["options"],
+        format_func=lambda option: f":{colors[option]}[{plain(option)}]",
     )
     if st.form_submit_button("Vote"):
         store.save(vote(poll, choice))
@@ -89,25 +100,29 @@ st.altair_chart(chart)
 # votes have no slice, so they're left out instead of showing a stray "0%".
 if total_votes(poll):
     pie_data = pd.DataFrame(
-        [
-            (result["option"], result["votes"], result["percent"], f"{result['percent']}%")
-            for result in results(poll)
-            if result["votes"]
-        ],
-        columns=["Option", "Votes", "Percent", "Label"],
+        {
+            "Option": result["option"],
+            "Votes": result["votes"],
+            "Percent": result["percent"],
+            "Label": f"{result['percent']}%",
+        }
+        for result in poll_results
+        if result["votes"]
     )
     pie = alt.Chart(pie_data).encode(
         theta=alt.Theta("Votes", stack=True),
         color=alt.Color("Option", scale=color_scale, legend=None),
     )
-    slices = pie.mark_arc(outerRadius=110).encode(tooltip=["Option", "Votes", "Percent"])
+    slices = pie.mark_arc(outerRadius=110).encode(
+        tooltip=["Option", "Votes", alt.Tooltip("Label", title="Percent")]
+    )
     labels = pie.mark_text(radius=135).encode(text="Label")
     st.altair_chart(slices + labels)
 
-for result in results(poll):
+for result in poll_results:
     trophy = "🏆 " if result["leader"] else ""
     st.markdown(
-        f"{trophy}:{colors[result['option']]}[{result['option']}]: "
+        f"{trophy}:{colors[result['option']]}[{plain(result['option'])}]: "
         f"{result['votes']} votes ({result['percent']}%)"
     )
 st.caption(f"{total_votes(poll)} votes so far")
