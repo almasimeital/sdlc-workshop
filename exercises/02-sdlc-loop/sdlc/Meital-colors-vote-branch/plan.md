@@ -31,6 +31,14 @@ pointing at the same element.
 
 No new dependencies, no storage changes.
 
+**Pie chart (spec revision, criteria 9–12).** No new rules, so `poll/core.py` doesn't change:
+the pie is drawn in `app.py` from the same `results(poll)` the list uses. It's an Altair
+`mark_arc` (theta = votes) layered with a `mark_text` that shows `{percent}%`, using the
+same `color_scale` as the bar chart and a tooltip of option, votes and percent. It is
+rendered between the bar chart and the list, and only `if total_votes(poll)`. Slices with 0
+votes get no text label, because they have no visible slice and a stray `0%` would sit at
+the edge of a neighbor.
+
 ## Tasks
 
 ### Task 1: Each option's rounded share of the vote
@@ -76,6 +84,56 @@ No new dependencies, no storage changes.
 Checkpoint after Task 4: both checks green (`uv run python -m pytest -q`,
 `uv run python -m ruff check .`) and the app looks right in the browser.
 
+### Task 5: Rounding guards from the test pass
+
+- Acceptance criteria: spec #1 (29 of 200 → 15%, no float error), #2 (1 / 1 / 6 → 13 / 13 /
+  75, a 101% total).
+- Test that proves it: in `tests/test_core.py`:
+  `test_an_exact_half_percent_rounds_up_without_float_error` (29 / 171 → `[15, 86]`),
+  `test_shares_may_add_up_to_more_than_100` (`[13, 13, 75]`). The code is already correct,
+  so these will pass on first run. They are guards against a float or "force 100%" rewrite,
+  and the log says so. To show they test something, temporarily swap in the float formula,
+  watch the first one fail, then put the integer formula back.
+- Files: `tests/test_core.py`.
+
+### Task 6: Results list wiring gaps
+
+- Acceptance criteria: spec #3 in the UI (zero-vote lines, no 🏆), #5 in the UI (both tied
+  leaders get 🏆), #8 (name in its chart color when names aren't colors).
+- Test that proves it: in `tests/test_app.py` (wiring only):
+  `test_results_list_before_and_after_the_first_vote` on Pizza / Sushi: first
+  `[":blue[Pizza]: 0 votes (0%)", ":red[Sushi]: 0 votes (0%)"]`, then after one Sushi vote
+  `[":blue[Pizza]: 0 votes (0%)", "🏆 :red[Sushi]: 1 votes (100%)"]`, and
+  `test_every_tied_leader_gets_the_trophy` (Pizza / Sushi / Salad with one vote each for Pizza
+  and Sushi). These may already pass, and are kept as guards.
+- Files: `tests/test_app.py`.
+
+### Task 7: Pie chart under the bar chart
+
+- Acceptance criteria: spec #9 (bar, pie, list, caption order), #10 (slice colors and
+  percent labels match the list), #11 (tooltip has option, votes and percent).
+- Test that proves it: in `tests/test_app.py`, written first:
+  `test_a_pie_chart_shows_each_options_share` (votes 2 / 1 / 0 on Red / Blue / Green: a second
+  `vega_lite_chart` exists, is an arc, uses the same color domain and range as the bars,
+  labels read `67%` and `33%` with no `0%`, and the tooltip fields are option, votes and
+  percent), and `test_the_page_reads_bar_chart_pie_list_caption` (element order in
+  `app.main`).
+- Files: `app.py`, `tests/test_app.py`.
+
+### Task 8: No pie chart before the first vote
+
+- Acceptance criteria: spec #12 (zero votes: no pie and no placeholder, while the bar chart
+  and list still show).
+- Test that proves it: in `tests/test_app.py`, written first:
+  `test_no_pie_chart_before_the_first_vote` (a fresh poll has exactly one `vega_lite_chart`,
+  plus the zero-vote list lines). Red against a pie that always renders, if Task 7 draws it
+  unconditionally; otherwise this is a guard, and the log says so.
+- Files: `app.py`, `tests/test_app.py`.
+- Manual check: refresh http://localhost:8503 and look at a fresh poll, one vote, and a tie.
+
+Checkpoint after Task 8: both checks green, and the page reads bar, pie, list, caption in the
+browser.
+
 ## Risks
 
 - **Float rounding.** `votes / total * 100` can land just under a half (for example
@@ -86,6 +144,14 @@ Checkpoint after Task 4: both checks green (`uv run python -m pytest -q`,
   already has the same behavior, so this is out of scope; flag it in review if it shows up.
 - **App tests find elements by position.** The clock is also markdown, so the app test looks
   for the result lines by content, not by index.
+- **Two charts on the page.** Existing app tests read `app.get("vega_lite_chart")[0]` and
+  expect it to be the bar chart. Because the pie is rendered after the bar chart, index 0
+  stays the bar chart; Task 7's order test pins that down.
+- **Reading element order in `AppTest`.** Walking `app.main` in document order is less
+  common than filtering by type. If it turns out to be awkward, fall back to comparing the
+  positions of the chart and markdown elements, and note it in the log.
+- **Pie looks empty on a single vote.** One option with 100% is a full circle with one
+  `100%` label. That's correct, and the manual check covers it.
 
 ## SDLC command coverage
 
