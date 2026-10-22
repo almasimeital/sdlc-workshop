@@ -92,9 +92,9 @@ def test_results_give_each_option_its_rounded_share():
     poll = {**make_poll(), "votes": {"Pizza": 2, "Sushi": 1, "Salad": 0}}
 
     assert results(poll) == [
-        {"option": "Pizza", "votes": 2, "percent": 67},
-        {"option": "Sushi", "votes": 1, "percent": 33},
-        {"option": "Salad", "votes": 0, "percent": 0},
+        {"option": "Pizza", "votes": 2, "percent": 67, "leader": True},
+        {"option": "Sushi", "votes": 1, "percent": 33, "leader": False},
+        {"option": "Salad", "votes": 0, "percent": 0, "leader": False},
     ]
 
 
@@ -112,9 +112,9 @@ def test_shares_are_not_forced_to_add_up_to_100():
 
 def test_results_with_no_votes_are_all_zero_percent():
     assert results(make_poll()) == [
-        {"option": "Pizza", "votes": 0, "percent": 0},
-        {"option": "Sushi", "votes": 0, "percent": 0},
-        {"option": "Salad", "votes": 0, "percent": 0},
+        {"option": "Pizza", "votes": 0, "percent": 0, "leader": False},
+        {"option": "Sushi", "votes": 0, "percent": 0, "leader": False},
+        {"option": "Salad", "votes": 0, "percent": 0, "leader": False},
     ]
 
 
@@ -122,6 +122,26 @@ def test_results_keep_the_creation_order():
     poll = {**make_poll(), "votes": {"Pizza": 0, "Sushi": 1, "Salad": 5}}
 
     assert [result["option"] for result in results(poll)] == ["Pizza", "Sushi", "Salad"]
+
+
+def leaders(poll):
+    return [result["option"] for result in results(poll) if result["leader"]]
+
+
+def test_the_option_with_most_votes_leads():
+    poll = {**make_poll(), "votes": {"Pizza": 1, "Sushi": 4, "Salad": 2}}
+
+    assert leaders(poll) == ["Sushi"]
+
+
+def test_every_option_tied_for_the_lead_leads():
+    poll = {**make_poll(), "votes": {"Pizza": 3, "Sushi": 3, "Salad": 1}}
+
+    assert leaders(poll) == ["Pizza", "Sushi"]
+
+
+def test_nobody_leads_a_poll_with_no_votes():
+    assert leaders(make_poll()) == []
 
 
 def test_results_do_not_change_the_poll():

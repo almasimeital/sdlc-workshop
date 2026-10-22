@@ -52,20 +52,24 @@ class Result(TypedDict):
     option: str
     votes: int
     percent: int
+    leader: bool
 
 
 def results(poll: Poll) -> list[Result]:
-    """Each option's votes and whole-number share of the total, in creation order.
+    """Each option's votes, whole-number share of the total and whether it leads, in
+    creation order.
 
-    Shares round half up (12.5% is 13%) and aren't adjusted to add up to 100%. With no
-    votes yet, every share is 0%.
+    Shares round half up (12.5% is 13%) and aren't adjusted to add up to 100%. Every option
+    tied for the most votes leads. With no votes yet, every share is 0% and nobody leads.
     """
     total = total_votes(poll)
+    top = max(poll["votes"].values())
     return [
         {
             "option": option,
             "votes": votes,
             "percent": (votes * 200 + total) // (2 * total) if total else 0,
+            "leader": total > 0 and votes == top,
         }
         for option, votes in tally(poll)
     ]
