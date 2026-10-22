@@ -6,5 +6,5 @@
 - [x] Task 4: Show the results list under the chart
 - [x] Task 5: Rounding guards from the test pass
 - [x] Task 6: Results list wiring gaps
-- [ ] Task 7: Pie chart under the bar chart
+- [x] Task 7: Pie chart under the bar chart
 - [ ] Task 8: No pie chart before the first vote

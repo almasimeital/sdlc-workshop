@@ -57,6 +57,29 @@ def result_lines(app):
     return [text.value for text in app.markdown if "votes (" in text.value]
 
 
+def mark_type(spec):
+    mark = spec["mark"]
+    return mark["type"] if isinstance(mark, dict) else mark
+
+
+def pie_chart(app):
+    return app.get("vega_lite_chart")[1]
+
+
+def page_outline(app):
+    """The page from top to bottom: each chart by its first mark, result lines, the caption."""
+    outline = []
+    for node in app.main:
+        if node.type == "vega_lite_chart":
+            spec = json.loads(node.proto.spec)
+            outline.append(mark_type(spec["layer"][0] if "layer" in spec else spec))
+        elif node.type == "markdown" and "votes (" in node.value:
+            outline.append("line")
+        elif node.type == "caption":
+            outline.append("caption")
+    return outline
+
+
 def test_the_current_time_in_utc_plus_3_is_shown():
     app = run_app()
 
@@ -136,6 +159,38 @@ def test_every_tied_leader_gets_the_trophy():
         "🏆 :red[Sushi]: 1 votes (50%)",
         ":green[Salad]: 0 votes (0%)",
     ]
+
+
+def test_a_pie_chart_shows_each_options_share():
+    app = run_app()
+    create(app, "Who will win?", ["Red", "Blue", "Green"])
+
+    cast_vote(app, "Red")
+    cast_vote(app, "Red")
+    cast_vote(app, "Blue")
+
+    chart = pie_chart(app)
+    spec = json.loads(chart.proto.spec)
+    slices, labels = spec["layer"]
+    assert [mark_type(slices), mark_type(labels)] == ["arc", "text"]
+    scale = slices["encoding"]["color"]["scale"]
+    assert dict(zip(scale["domain"], scale["range"], strict=True)) == bar_colors(app)
+    assert [field["field"] for field in slices["encoding"]["tooltip"]] == [
+        "Option",
+        "Votes",
+        "Percent",
+    ]
+    table = convert_arrow_bytes_to_pandas_df(chart.proto.datasets[0].data.data)
+    assert dict(zip(table["Option"], table["Label"], strict=True)) == {"Red": "67%", "Blue": "33%"}
+
+
+def test_the_page_reads_bar_chart_pie_list_caption():
+    app = run_app()
+    create(app, "Lunch?", ["Pizza", "Sushi"])
+
+    cast_vote(app, "Pizza")
+
+    assert page_outline(app) == ["bar", "arc", "line", "line", "caption"]
 
 
 def test_each_vote_option_is_labelled_in_its_color():

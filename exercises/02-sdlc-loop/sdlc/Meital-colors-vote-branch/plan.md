@@ -179,4 +179,6 @@ browser.
 - 2026-10-22 11:25 · task 6 guards · `uv run python -m pytest tests/test_app.py -q -k "results_list or tied_leader"` → 3 passed on first run (expected: view already correct)
 - 2026-10-22 11:25 · task 6 mutation check · temporarily colored names with `option.lower()` instead of `colors[option]`; same command → 2 failed, 1 passed: both new tests failed, while the old Red/Blue/Green test still passed (the gap they close). Restored; `git diff app.py` empty
 - 2026-10-22 11:25 · task 6 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 50 passed, all checks passed
+- 2026-10-22 11:26 · task 7 RED · `uv run python -m pytest tests/test_app.py -q -k "pie_chart_shows or bar_chart_pie"` → 2 failed: `IndexError` (no second chart) and outline `['bar', 'line', 'line', 'caption']` instead of `['bar', 'arc', 'line', 'line', 'caption']` (expected)
+- 2026-10-22 11:28 · task 7 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 52 passed, all checks passed; 104 warnings, all Altair `UserWarning: I don't know how to infer vegalite type from 'empty'`, from the pie being drawn with no data before the first vote. Task 8 removes that case
 

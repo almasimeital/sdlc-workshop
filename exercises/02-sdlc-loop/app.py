@@ -84,6 +84,24 @@ chart = (
     )
 )
 st.altair_chart(chart)
+
+# Options without votes have no slice, so they're left out instead of showing a stray "0%".
+pie_data = pd.DataFrame(
+    [
+        (result["option"], result["votes"], result["percent"], f"{result['percent']}%")
+        for result in results(poll)
+        if result["votes"]
+    ],
+    columns=["Option", "Votes", "Percent", "Label"],
+)
+pie = alt.Chart(pie_data).encode(
+    theta=alt.Theta("Votes", stack=True),
+    color=alt.Color("Option", scale=color_scale, legend=None),
+)
+slices = pie.mark_arc(outerRadius=110).encode(tooltip=["Option", "Votes", "Percent"])
+labels = pie.mark_text(radius=135).encode(text="Label")
+st.altair_chart(slices + labels)
+
 for result in results(poll):
     trophy = "🏆 " if result["leader"] else ""
     st.markdown(
