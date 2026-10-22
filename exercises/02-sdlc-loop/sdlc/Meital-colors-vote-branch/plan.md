@@ -159,8 +159,8 @@ browser.
 - [x] /sdlc:plan
 - [x] /sdlc:build
 - [x] /sdlc:test (12 criteria and 12 decisions mapped by the test-engineer agent; 3 pie gaps closed: labels tied to `results()`, pie colors for non-color names, no placeholder at zero votes. Earlier pass: 6 gaps, closed by tasks 5–8)
-- [x] /sdlc:review (10 findings: 4 fixed (I1, S1, S2, N1), 4 won't fix (S3, S6, N2, N3), 2 deferred to /sdlc:code-simplify (S4, S5))
-- [ ] /sdlc:code-simplify
+- [x] /sdlc:review (10 findings: 6 fixed (I1, S1, S2, N1; S4, S5 in /sdlc:code-simplify), 4 won't fix (S3, S6, N2, N3))
+- [x] /sdlc:code-simplify (2 simplifications in `app.py`: results computed once, pie rows as named dicts; no test changed)
 
 ## Test evidence
 
@@ -198,3 +198,4 @@ Times marked `~` are estimates. Times without `~` on GREEN and gate lines come f
 - 2026-10-22 ~12:22 · review S2 · added `altair>=5` to `pyproject.toml`; `uv lock` → resolved 53 packages, only the direct-dependency entry added (pinned altair 6.2.2 / 6.3.0 unchanged); `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
 - 2026-10-22 ~12:22 · review N1 RED · `uv run python -m pytest tests/test_app.py -q -k "pie_chart_shows"` → 1 failed: tooltip `('Percent', None) != ('Label', 'Percent')` (expected)
 - 2026-10-22 12:22 · review N1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed
+- 2026-10-22 12:24 · /sdlc:code-simplify · started green (57 passed); after each of 2 simplifications (S4 `poll_results` computed once, S5 pie rows built as named dicts) `uv run python -m pytest -q && uv run python -m ruff check .` → 57 passed, all checks passed; no test edited

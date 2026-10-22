@@ -100,12 +100,14 @@ st.altair_chart(chart)
 # votes have no slice, so they're left out instead of showing a stray "0%".
 if total_votes(poll):
     pie_data = pd.DataFrame(
-        [
-            (result["option"], result["votes"], result["percent"], f"{result['percent']}%")
-            for result in poll_results
-            if result["votes"]
-        ],
-        columns=["Option", "Votes", "Percent", "Label"],
+        {
+            "Option": result["option"],
+            "Votes": result["votes"],
+            "Percent": result["percent"],
+            "Label": f"{result['percent']}%",
+        }
+        for result in poll_results
+        if result["votes"]
     )
     pie = alt.Chart(pie_data).encode(
         theta=alt.Theta("Votes", stack=True),
