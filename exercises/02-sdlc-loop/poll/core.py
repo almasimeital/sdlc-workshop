@@ -48,6 +48,24 @@ def total_votes(poll: Poll) -> int:
     return sum(poll["votes"].values())
 
 
+class Result(TypedDict):
+    option: str
+    votes: int
+    percent: int
+
+
+def results(poll: Poll) -> list[Result]:
+    """Each option's votes and whole-number share of the total, in creation order.
+
+    Shares round half up (12.5% is 13%) and aren't adjusted to add up to 100%.
+    """
+    total = total_votes(poll)
+    return [
+        {"option": option, "votes": votes, "percent": (votes * 200 + total) // (2 * total)}
+        for option, votes in tally(poll)
+    ]
+
+
 COLORS = ["blue", "red", "green", "orange", "violet", "yellow", "gray"]
 COLOR_SPELLINGS = {"purple": "violet", "grey": "gray"}
 

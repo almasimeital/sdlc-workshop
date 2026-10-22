@@ -91,10 +91,13 @@ Checkpoint after Task 4: both checks green (`uv run python -m pytest -q`,
 
 - [x] /sdlc:spec
 - [x] /sdlc:plan
-- [ ] /sdlc:build
+- [x] /sdlc:build
 - [ ] /sdlc:test
 - [ ] /sdlc:review
 - [ ] /sdlc:code-simplify
 
 ## Test evidence
+
+- 2026-10-22 10:59 · task 1 RED · `uv run python -m pytest tests/test_core.py -q` → collection error: `ImportError: cannot import name 'results' from 'poll.core'` (expected, function doesn't exist)
+- 2026-10-22 11:00 · task 1 GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 39 passed, all checks passed
 

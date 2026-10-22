@@ -2,11 +2,24 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from poll.core import COLORS, create_poll, local_time_label, option_colors, tally, total_votes, vote
+from poll.core import (
+    COLORS,
+    create_poll,
+    local_time_label,
+    option_colors,
+    results,
+    tally,
+    total_votes,
+    vote,
+)
 
 
 def make_poll():
     return create_poll("Lunch?", ["Pizza", "Sushi", "Salad"])
+
+
+def percents(poll):
+    return [result["percent"] for result in results(poll)]
 
 
 def test_create_poll_starts_with_zero_votes():
@@ -73,6 +86,28 @@ def test_total_votes_counts_every_vote():
 
 def test_total_votes_is_zero_for_a_new_poll():
     assert total_votes(make_poll()) == 0
+
+
+def test_results_give_each_option_its_rounded_share():
+    poll = {**make_poll(), "votes": {"Pizza": 2, "Sushi": 1, "Salad": 0}}
+
+    assert results(poll) == [
+        {"option": "Pizza", "votes": 2, "percent": 67},
+        {"option": "Sushi", "votes": 1, "percent": 33},
+        {"option": "Salad", "votes": 0, "percent": 0},
+    ]
+
+
+def test_half_a_percent_rounds_up():
+    poll = {**create_poll("Lunch?", ["Pizza", "Sushi"]), "votes": {"Pizza": 1, "Sushi": 7}}
+
+    assert percents(poll) == [13, 88]
+
+
+def test_shares_are_not_forced_to_add_up_to_100():
+    poll = {**make_poll(), "votes": {"Pizza": 1, "Sushi": 1, "Salad": 1}}
+
+    assert percents(poll) == [33, 33, 33]
 
 
 def test_option_colors_gives_each_option_its_own_color_in_order():
