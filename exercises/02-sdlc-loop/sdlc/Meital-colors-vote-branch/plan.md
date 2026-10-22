@@ -188,3 +188,4 @@ browser.
 - 2026-10-22 11:41 · /sdlc:test mutation checks · (a) pie labels from `round(votes / total * 100)` → `test_pie_labels_use_the_same_percentages_as_the_list` failed `['12%', '88%'] == ['13%', '88%']`; (b) `st.markdown("No votes yet")` at zero votes → `test_no_pie_chart_before_the_first_vote` failed `['No votes yet'] == []`; (c) pie colors looked up by option name → `test_pie_colors_match_the_bars_when_options_are_not_color_names` failed while the Red/Blue/Green pie test passed. All restored; `git diff app.py` empty
 - 2026-10-22 11:42 · /sdlc:test GREEN · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
 
+- 2026-10-22 11:59 · /sdlc:pr gate G4 · `uv run python -m pytest -q && uv run python -m ruff check .` → 55 passed, all checks passed
